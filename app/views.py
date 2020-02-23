@@ -4,9 +4,18 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
+from flask_wtf import FlaskForm
 import os
+from wtforms import StringField
+from wtforms.validators import DataRequired, Length,InputRequired, Email
+from wtforms import StringField, TextField, SubmitField, TextAreaField
+from wtforms.fields.html5 import EmailField
+import os
+from app.forms import UploadForm
+from app.__init__ import UPLOAD_FOLDER
 from app import app
-from flask import render_template, request, redirect, url_for, flash, session, abort
+from app import forms
+from flask import render_template, request, redirect, url_for, flash, session, abort, Flask,Markup
 from werkzeug.utils import secure_filename
 
 
@@ -22,12 +31,42 @@ def home():
 
 @app.route('/about/')
 def about():
-    """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    mlist = get_uploaded_images()
+    #string = "<ul>\n"
+    string =  Markup( "<img src = '{{url_for('static',filename='uploads/crabrawler.jpg' )}}' alt ='crab guy' /> ")
+    output =Markup ("<p>Hello</p>")
+    
+    
+    #string +="</ul>"
+    """string = "<ul>\n"
+    for s in mlist:
+        string += "<li>" +"<img src = "+str({{url_for('static',filename=str(s) )}})+ "> </li>\n"
+    string += "</ul>"
+    return string"""
+    #return render_template('files.html',st=string)
 
+    """Render the website's about page."""
+    return render_template('about.html', name="Tyler Thomas", st = string,k=output)
+
+
+@app.route('/files')
+def files():
+    mlist = get_uploaded_images()
+    string = "<ul>\n"
+    for s in mlist:
+        string += "<li> <img src = '{{url_for(filename=str(s) )}}' > </li>\n"
+    string += "</ul>"
+    string = Markup(string)
+    
+    return render_template('files.html',st=string)
 
 @app.route('/upload', methods=['POST', 'GET'])
 def upload():
+    
+    filefolder = UPLOAD_FOLDER
+
+    form = UploadForm()
+    
     if not session.get('logged_in'):
         abort(401)
 
@@ -36,15 +75,32 @@ def upload():
     # Validate file upload on submit
     if request.method == 'POST':
         # Get file data and save to your uploads folder
+        if form.validate_on_submit():
+            file = request.files.get('file')
+            
+            filename = secure_filename(form.upload.data.filename)
+            form.upload.data.save(os.path.join(filefolder, filename))
+            flash('File Saved', 'success')
+            return redirect(url_for('home'))
 
-        flash('File Saved', 'success')
-        return redirect(url_for('home'))
+    if request.method == 'GET':
+        
+         return render_template('upload.html',form=form)
 
-    return render_template('upload.html')
-
-
+    return render_template('upload.html', form=form)
+    
+def get_uploaded_images():
+    rootdir = os.getcwd()
+    image_list=[]
+    print (rootdir)
+    for subdir, dirs, files in os.walk(rootdir + './app/static/uploads'):
+        for file in files:
+            print (os.path.join(subdir, file))
+            image_list.append(os.path.join(subdir, file))
+    return image_list
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    get_uploaded_images()
     error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME'] or request.form['password'] != app.config['PASSWORD']:
