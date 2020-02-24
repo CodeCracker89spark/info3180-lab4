@@ -34,9 +34,9 @@ def about():
     mlist = get_uploaded_images()
     #string = "<ul>\n"
     string =  Markup( "<img src = '{{url_for('static',filename='uploads/crabrawler.jpg' )}}' alt ='crab guy' /> ")
-    output =Markup ("<p>Hello</p>")
-    
-    
+    output =Markup (str(mlist[1][65:]))
+   # hope=Markup("<img  src =  '{{url_for('uploads'filename='crabrawler.jpg' )}}'/>")
+    hope= Markup("<img src ="+str(mlist[1][65:])+" />")
     #string +="</ul>"
     """string = "<ul>\n"
     for s in mlist:
@@ -46,19 +46,21 @@ def about():
     #return render_template('files.html',st=string)
 
     """Render the website's about page."""
-    return render_template('about.html', name="Tyler Thomas", st = string,k=output)
+    return render_template('about.html', name="Tyler Thomas", st = hope,k=output)
 
 
 @app.route('/files')
 def files():
     mlist = get_uploaded_images()
+
+    """
     string = "<ul>\n"
     for s in mlist:
-        string += "<li> <img src = '{{url_for(filename=str(s) )}}' > </li>\n"
+        string += "<li> <img src ="+str(s)+" alt = /> </li>\n"
     string += "</ul>"
-    string = Markup(string)
+    string = Markup(string)"""
     
-    return render_template('files.html',st=string)
+    return render_template('files.html',images=mlist)
 
 @app.route('/upload', methods=['POST', 'GET'])
 def upload():
@@ -93,10 +95,12 @@ def get_uploaded_images():
     rootdir = os.getcwd()
     image_list=[]
     print (rootdir)
-    for subdir, dirs, files in os.walk(rootdir + './app/static/uploads'):
+    for subdir, dirs, files in os.walk(rootdir + '/app/static/uploads'):
         for file in files:
-            print (os.path.join(subdir, file))
-            image_list.append(os.path.join(subdir, file))
+            # print (os.path.join(subdir, file))
+            print(file)
+            image_list.append( file)
+            
     return image_list
 @app.route('/login', methods=['POST', 'GET'])
 def login():

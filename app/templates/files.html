@@ -2,6 +2,10 @@
 
 {% block main %}
 <h1 class="page-header">Image Files Available</h1>
-{{st}}
 
+<ul>
+{% for image in images %}
+  <li><img src="{{ url_for('static', filename='uploads/' + image) }}" alt = {{image}}/></li>
+{% endfor %}
+</ul>
 {% endblock %}

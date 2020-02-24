@@ -11,6 +11,9 @@
   {# Add the file upload field as you learnt for Flask-WTF #}
   <div class="form-field">{{ form.upload.label }} <p class="need"> (Required)</p> 
 						<p>Please Upload File</p>{{ form.upload(size=20) }}
+	{% if form.upload.errors %}
+        <ul class="errors">{% for error in form.upload.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    {% endif %}	
   </div>
   <button type="submit" name="submit" class="btn btn-primary">Upload file</button>
 </form>
