@@ -31,26 +31,19 @@ def home():
 
 @app.route('/about/')
 def about():
-    mlist = get_uploaded_images()
-    #string = "<ul>\n"
-    string =  Markup( "<img src = '{{url_for('static',filename='uploads/crabrawler.jpg' )}}' alt ='crab guy' /> ")
-    output =Markup (str(mlist[1][65:]))
-   # hope=Markup("<img  src =  '{{url_for('uploads'filename='crabrawler.jpg' )}}'/>")
-    hope= Markup("<img src ="+str(mlist[1][65:])+" />")
-    #string +="</ul>"
-    """string = "<ul>\n"
-    for s in mlist:
-        string += "<li>" +"<img src = "+str({{url_for('static',filename=str(s) )}})+ "> </li>\n"
-    string += "</ul>"
-    return string"""
-    #return render_template('files.html',st=string)
-
-    """Render the website's about page."""
-    return render_template('about.html', name="Tyler Thomas", st = hope,k=output)
+   
+    # string =  Markup( "<img src = '{{url_for('static',filename='uploads/crabrawler.jpg' )}}' alt ='crab guy' /> ")
+   
+  
+    
+    return render_template('about.html', name="Tyler Thomas")
 
 
 @app.route('/files')
 def files():
+    if not session.get('logged_in'):
+        abort(401)
+
     mlist = get_uploaded_images()
 
     """
@@ -104,7 +97,7 @@ def get_uploaded_images():
     return image_list
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    get_uploaded_images()
+    
     error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME'] or request.form['password'] != app.config['PASSWORD']:

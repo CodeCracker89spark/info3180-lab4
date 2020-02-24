@@ -1,3 +1,19 @@
 body {
     padding-top: 5rem;
 }
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 200px;
+  grid-gap: 50px;
+}
+
+.need{
+	display: inline;
+}
+
+/*.imgContainer {
+   /* position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}*/

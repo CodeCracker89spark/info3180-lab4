@@ -3,9 +3,9 @@
 {% block main %}
 <h1 class="page-header">Image Files Available</h1>
 
-<ul>
+<ol class = "wrapper">
 {% for image in images %}
-  <li><img src="{{ url_for('static', filename='uploads/' + image) }}" alt = {{image}}/></li>
+  <li class = "imgContainer"><img src="{{ url_for('static', filename='uploads/' + image) }}" alt = {{image}} width="240" height="210"/></li>
 {% endfor %}
-</ul>
+</ol>
 {% endblock %}
